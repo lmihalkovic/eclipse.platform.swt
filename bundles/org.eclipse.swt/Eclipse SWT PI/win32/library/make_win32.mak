@@ -32,6 +32,11 @@ GDIP_LIB     = $(GDIP_PREFIX)-$(WS_PREFIX)-$(SWT_VERSION).dll
 GDIP_LIBS    = gdiplus.lib
 GDIP_OBJS    = gdip.obj gdip_structs.obj gdip_stats.obj gdip_custom.obj
 
+D2D_PREFIX   = swt-d2d
+D2D_LIB     = $(D2D_PREFIX)-$(WS_PREFIX)-$(SWT_VERSION).dll
+D2D_LIBS    = d2d1.lib Dwrite.lib
+D2D_OBJS    = d2d.obj d2d_structs.obj d2d_stats.obj d2d_custom.obj dw.obj dw_stats.obj dw_custom.obj
+
 AWT_PREFIX = swt-awt
 AWT_LIB    = $(AWT_PREFIX)-$(WS_PREFIX)-$(SWT_VERSION).dll
 AWT_LIBS   = "$(JAVA_HOME)\jre\bin\jawt.lib"
@@ -125,6 +130,15 @@ make_swt: $(SWT_OBJS) swt.res
 	link @templrf
 	del templrf
 
+make_d2d: $(D2D_OBJS) swt_d2d.res
+	echo $(ldebug) $(dlllflags) $(guilibsmt) >templrf
+	echo $(D2D_LIBS) >>templrf
+	echo $(D2D_OBJS) >>templrf
+	echo swt_d2d.res >>templrf
+	echo -out:$(D2D_LIB) >>templrf
+	link @templrf
+	del templrf
+
 make_gdip: $(GDIP_OBJS) swt_gdip.res
 	echo $(ldebug) $(dlllflags) $(guilibsmt) >templrf
 	echo $(GDIP_LIBS) >>templrf
@@ -172,6 +186,9 @@ make_xulrunner: $(XULRUNNER_OBJS) swt_xpcom.res
 	
 swt.res:
 	rc $(RCFLAGS) -DSWT_ORG_FILENAME=\"$(SWT_LIB)\" -r -fo swt.res swt.rc
+
+swt_d2d.res:
+	rc $(RCFLAGS) -DSWT_ORG_FILENAME=\"$(D2D_LIB)\" -r -fo swt_d2d.res swt_d2d.rc
 
 swt_gdip.res:
 	rc $(RCFLAGS) -DSWT_ORG_FILENAME=\"$(GDIP_LIB)\" -r -fo swt_gdip.res swt_gdip.rc
